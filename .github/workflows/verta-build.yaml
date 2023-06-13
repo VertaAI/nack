@@ -86,6 +86,7 @@ jobs:
             ${{ env.ECR_REPOSITORY }}:${{ steps.image_info.outputs.tag }}
 
       - name: Configure AWS credentials for us-west-2
+        # external components should mirror every merge to verta/main
         if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -185,6 +186,7 @@ jobs:
             ${{ env.ECR_REPOSITORY }}:${{ steps.image_info.outputs.tag }}
 
       - name: Configure AWS credentials for us-west-2
+        # external components should mirror every merge to verta/main
         if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         uses: aws-actions/configure-aws-credentials@v2
         with:
