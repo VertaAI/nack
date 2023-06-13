@@ -1,8 +1,11 @@
 name: Testing
 
 on:
-- push
-- pull_request
+  # Only run when this repo changes from private to public.
+  # Already public = never
+  public
+# - push
+# - pull_request
 
 jobs:
   build:

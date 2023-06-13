@@ -8,7 +8,7 @@ FROM alpine:latest as osdeps
 RUN apk add --no-cache ca-certificates
 
 FROM alpine:3.17
-RUN apk -U --no-cache upgrad
+RUN apk -U --no-cache upgrade
 COPY --from=build /go/src/nack/nats-server-config-reloader.docker /usr/local/bin/nats-server-config-reloader
 COPY --from=osdeps /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
