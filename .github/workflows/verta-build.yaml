@@ -86,7 +86,7 @@ jobs:
             ${{ env.ECR_REPOSITORY }}:${{ steps.image_info.outputs.tag }}
 
       - name: Configure AWS credentials for us-west-2
-        if: startsWith( github.ref, 'refs/heads/release/' )
+        if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::493416687123:role/github-actions
@@ -94,12 +94,12 @@ jobs:
 
       - name: Login to Amazon ECR for us-west-2
         id: login-ecr-release
-        if: startsWith( github.ref, 'refs/heads/release/' )
+        if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Mirror Docker image to us-west-2
         id: mirror-release
-        if: startsWith( github.ref, 'refs/heads/release/' )
+        if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         shell: bash
         run: |
           export TARGET_REPOSITORY=${ECR_REPOSITORY/us-east-1/us-west-2}
@@ -159,11 +159,11 @@ jobs:
           echo "sha=${sha}" >> $GITHUB_OUTPUT
           echo "tag=${branch}-${sha_details}" >> $GITHUB_OUTPUT
 
-      - name: Update commit status with Docker image status
-        uses: ouzi-dev/commit-status-updater@v2
-        with:
-          name: "Tag: ${{ steps.image_info.outputs.tag }}"
-          description: "Publishing..."
+      # - name: Update commit status with Docker image status
+      #   uses: ouzi-dev/commit-status-updater@v2
+      #   with:
+      #     name: "Tag: ${{ steps.image_info.outputs.tag }}"
+      #     description: "Publishing..."
 
       - name: Inspect image to see if it already exists
         id: should_publish
@@ -185,7 +185,7 @@ jobs:
             ${{ env.ECR_REPOSITORY }}:${{ steps.image_info.outputs.tag }}
 
       - name: Configure AWS credentials for us-west-2
-        if: startsWith( github.ref, 'refs/heads/release/' )
+        if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::493416687123:role/github-actions
@@ -193,12 +193,12 @@ jobs:
 
       - name: Login to Amazon ECR for us-west-2
         id: login-ecr-release
-        if: startsWith( github.ref, 'refs/heads/release/' )
+        if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Mirror Docker image to us-west-2
         id: mirror-release
-        if: startsWith( github.ref, 'refs/heads/release/' )
+        if: startsWith( github.ref, 'refs/heads/release/' ) || ( github.ref == 'refs/heads/verta/main' )
         shell: bash
         run: |
           export TARGET_REPOSITORY=${ECR_REPOSITORY/us-east-1/us-west-2}
@@ -206,15 +206,15 @@ jobs:
             docker tag ${ECR_REPOSITORY}:${{ steps.image_info.outputs.tag }} ${TARGET_REPOSITORY}:${{ steps.image_info.outputs.tag }} && \
             docker push ${TARGET_REPOSITORY}:${{ steps.image_info.outputs.tag }}
 
-      - name: Create commit comment
-        uses: peter-evans/commit-comment@v2
-        if: "!(steps.should_publish.outputs.targets == '')"
-        with:
-          body: "Docker Tag: ${{ steps.image_info.outputs.tag }}"
+      # - name: Create commit comment
+      #   uses: peter-evans/commit-comment@v2
+      #   if: "!(steps.should_publish.outputs.targets == '')"
+      #   with:
+      #     body: "Docker Tag: ${{ steps.image_info.outputs.tag }}"
 
-      - name: Update commit status with Docker image status
-        uses: ouzi-dev/commit-status-updater@v2
-        with:
-          name: "Tag: ${{ steps.image_info.outputs.tag }}"
-          url: "${{ github.server_url }}/${{ github.repository }}/commit/${{ steps.image_info.outputs.sha }}#comments"
-          status: success
+      # - name: Update commit status with Docker image status
+      #   uses: ouzi-dev/commit-status-updater@v2
+      #   with:
+      #     name: "Tag: ${{ steps.image_info.outputs.tag }}"
+      #     url: "${{ github.server_url }}/${{ github.repository }}/commit/${{ steps.image_info.outputs.sha }}#comments"
+      #     status: success
