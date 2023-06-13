@@ -1,8 +1,11 @@
 name: Release
 on:
-  push:
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
+  # Only run when this repo changes from private to public.
+  # Already public = never
+  public
+  # push:
+  #   tags:
+  #     - v[0-9]+.[0-9]+.[0-9]+
 jobs:
   release:
     runs-on: ubuntu-latest
